@@ -1,21 +1,18 @@
 #!/usr/bin/node
 const request = require('request');
 
-if (process.argv.length > 2) {
-  request(process.argv[2], (err, res, body) => {
-    const aggregate = {};
-
-    if (err) {
-      console.log(err);
-    }
-    JSON.parse(body).forEach(element => {
-      if (element.completed) {
-        if (!aggregate[element.userId]) {
-          aggregate[element.userId] = 0;
+request(process.argv[2], function (err, response, body) {
+  if (err == null) {
+    const resp = {};
+    const json = JSON.parse(body);
+    for (let i = 0; i < json.length; i++) {
+      if (json[i].completed === true) {
+        if (resp[json[i].userId] === undefined) {
+          resp[json[i].userId] = 0;
         }
-        aggregate[element.userId]++;
+        resp[json[i].userId]++;
       }
-    });
-    console.log(aggregate);
-  });
-}
+    }
+    console.log(resp);
+  }
+});
